@@ -34,7 +34,7 @@ namespace excelChange
         /// <summary>
         /// Xnames에 있는 이름은 겹치는 무조건 해당값(X)에 걸러준다
         /// </summary>
-        List<string> Cnames = new List<string> {  };
+        List<string> Cnames = new List<string> {"d"};
         List<string> Bnames = new List<string> {  };
         List<string> Anames = new List<string> {  };
         List<string> Zero_names = new List<string> {"open","OPEN"};
@@ -42,6 +42,7 @@ namespace excelChange
 
         /// <summary>
         /// Only_Xnames에 있는 이름은 아예동일한경우 무조건 해당값(X)에 걸러준다
+        /// 아직은 미사용
         /// </summary>
         List<string> Only_Cnames = new List<string> { };
         List<string> Only_Bnames = new List<string> { };
@@ -49,7 +50,7 @@ namespace excelChange
         List<string> Only_Zero_names = new List<string> { };
 
         //저장할 테이블이름
-        string tablename = "텟텟";
+        string tablename = "d";
 
 
         /// <summary>
@@ -280,11 +281,11 @@ namespace excelChange
         }
 
 
-        //영어가 포함이 되어잇을경우 open, .. 분류해서 0처리해달라했다.
+        //영어만.
         static bool ContainsEnglish(string str)
         {
-            // 정규 표현식을 사용하여 영어가 포함되어 있는지 확인
-            return Regex.IsMatch(str, "[a-zA-Z]");
+            // 정규 표현식을 사용하여 영어만.
+            return Regex.IsMatch(str, @"^[a-zA-Z]+$");
         }
 
         //쿼리를 띄워주는 화면을 생성 

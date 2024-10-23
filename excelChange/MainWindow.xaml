@@ -14,7 +14,8 @@
             </ScrollViewer>
 
         </Grid>
-        <Grid x:Name="LoadBox">        
+        <Grid x:Name="LoadBox">
+            <!--<Image Height="40" Width="40" VerticalAlignment="Top" HorizontalAlignment="Left" Source="pack://application:,,,/Image/ExcelChangeSQL.png"/> -->
             <Button Name="btnLoadExcel" Content="Load Excel" Click="btnLoadExcel_Click" VerticalAlignment="Top" Width="100" Height="30" />
             <Button Name="btnQureyExcel" Content="Qurey Excel" Click="BtnQureyExcel_Click" VerticalAlignment="Top" HorizontalAlignment="Right" Margin="0 0 150 0 " Width="100" Height="30" Visibility="Hidden"/>
             <DataGrid Name="dataGrid" AutoGenerateColumns="True" Margin="10,50,10,10" />
