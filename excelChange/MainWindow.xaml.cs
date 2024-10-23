@@ -64,7 +64,7 @@ namespace excelChange
         }
 
         //분리한 이유는 매번 새로운 인스턴를 생성하기 위해서 
-        (이프로그램은 특정한 규격의 엑셀만 돌아가게 설계)
+        //(이프로그램은 특정한 규격의 엑셀만 돌아가게 설계)
         private void OpenExcelFile()
         {
             // 매번 새로운 OpenFileDialog 인스턴스 생성
