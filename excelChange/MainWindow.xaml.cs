@@ -170,8 +170,8 @@ namespace excelChange
             {
                 int day = (row / 8) +1;
 
-                if (count) { result.Add(Environment.NewLine + "======" + day.ToString() + "AM" + "======"); }
-                else { result.Add(Environment.NewLine+"======" + day.ToString() + "PM" + "======"); }
+                if (count) { result.Add(Environment.NewLine + "/*======    " + day.ToString() + "AM" + "    ======"); }
+                else { result.Add(Environment.NewLine+"/*======   " + day.ToString() + "PM" + "   ======*/"); }
             
                 // 2 - 1(10없음) + 15 (마지막뽑아낼 rm)
                 for (int column = 2; column < 2 - 1 + 15; column++)
@@ -198,6 +198,7 @@ namespace excelChange
                         continue;
                     }
                     string[] splitData = data.Split('/');
+                    int total = 0;
 
                     for (int length = 0; length < splitData.Length; length++)
                     {
@@ -208,6 +209,7 @@ namespace excelChange
                         if (Cnames.Any(name => splitData[length].Contains(name)))
                         {
                             gubun = "C"; // 이름이 포함된 경우
+                            
                         }else if(Bnames.Any(name => splitData[length].Contains(name)))
                         {
                             gubun = "B"; // 이름이 포함된 경우
@@ -217,16 +219,13 @@ namespace excelChange
 
                             gubun = "A"; // 이름이 포함된 경우
                         }
-                        else if (Zero_names.Any(name => splitData[length].Contains(name)))
+                        else if (ContainsEnglish(splitData[length]) || Zero_names.Any(name => splitData[length].Contains(name)))
                         {
 
                             gubun = "0"; // 이름이 포함된 경우
                         }
-                        else if (ContainsEnglish(splitData[length]))
-                        {
-                            gubun = "0";
-                         }
-                        // 일반상황 (나눈이유는 특수한상황에&&을 같이해버리면 특수한것도 일반이랑 겹쳐버린다
+                   
+                        // 일반상황 (나눈이유는 특수한상황에 ||을 같이해버리면 특수한것도 일반이랑 겹쳐버린다
                         else if (splitData.Length == 1)
                         {
                             gubun = "0";
@@ -239,11 +238,29 @@ namespace excelChange
                         {
                             gubun = length == 0 ? "C" : "B";
                         }
+                        switch (gubun)
+                        {
+                            case "0":
+                                total += 100;
+                                break;
+                            case "A":
+                                total += 50;
+                                break;
+                            case "B":
+                                total += 30;
+                                break;
+                            case "C":
+                                total += 40;
+                                break;
 
+                        }
                         string query = string.Format("INSERT INTO {0}(dr_nm, day_time, week, op_no, gubun) VALUES('{1}', '{2}', '{3}','{4}','{5}');", tablename, dr_nm, count ? "AM" : "PM", day, "Rm " + (column - 1 < 10 ? column - 1 : column).ToString(), gubun);
                         result.Add(query);
                     }
-
+                    if (!(total == 100))
+                    {
+                        result.Add(string.Format("/* 상단의 RM {0}의 총합이 0.1이아닙니다 */", (column - 1 < 10 ? column - 1 : column).ToString()));
+                    }
                 }
                 count = !count; 
                 
