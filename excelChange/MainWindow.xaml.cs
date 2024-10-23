@@ -221,7 +221,10 @@ namespace excelChange
                         }
                         else if (ContainsEnglish(splitData[length]) || Zero_names.Any(name => splitData[length].Contains(name)))
                         {
-
+                            //open인경우는 공란이다.
+                            if (string.Equals("open", dr_nm.ToLower())) {
+                                dr_nm = "";
+                            }
                             gubun = "0"; // 이름이 포함된 경우
                         }
                    
