@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.34930.48
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "excelChange", "excelChange\excelChange.csproj", "{1DF88917-1747-4BE3-858D-ED1F0579C070}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{1DF88917-1747-4BE3-858D-ED1F0579C070}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1DF88917-1747-4BE3-858D-ED1F0579C070}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1DF88917-1747-4BE3-858D-ED1F0579C070}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1DF88917-1747-4BE3-858D-ED1F0579C070}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {4E122549-8BB5-446D-8DC6-19344956D556}
+	EndGlobalSection
+EndGlobal
