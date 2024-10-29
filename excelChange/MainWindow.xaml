@@ -19,6 +19,7 @@
             <Button Name="btnLoadExcel" Content="Load Excel" Click="btnLoadExcel_Click" VerticalAlignment="Top" Width="100" Height="30" />
             <Button Name="btnQureyExcel" Content="Qurey Excel" Click="BtnQureyExcel_Click" VerticalAlignment="Top" HorizontalAlignment="Right" Margin="0 0 150 0 " Width="100" Height="30" Visibility="Hidden"/>
             <DataGrid Name="dataGrid" AutoGenerateColumns="True" Margin="10,50,10,10" />
+            <Button x:Name="btn_Setting" Content="설정창" Click="Btn_Setting_Click" VerticalAlignment="Top" Width="100" Height="30" Margin="28,0,664,0" />
         </Grid>
 
     </Grid>

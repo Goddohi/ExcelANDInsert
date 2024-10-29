@@ -4,13 +4,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
-using System;
 using System.Data;
 using System.IO;
 using Microsoft.Win32;
 using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
 using System.Text.RegularExpressions;
+using excelChange.View;
+using excelChange.Core;
 
 namespace excelChange
 {
@@ -52,20 +53,43 @@ namespace excelChange
         //저장할 테이블이름
         string tablename = "d";
 
+        //Setting 창닫는이벤트 인식용
+        private readonly EventAggregator _eventAggregator = new EventAggregator();
+        //추후 재 로직에 필요할 데이터
+        string saveFileName = "";
 
-        /// <summary>
-        /// 로직
-        /// </summary>
-     
 
-        // 파일 열기 대화상자 생성하는 버튼 로직
+
+
+        /* ********                ********   *
+                  *                    *      *
+           ********                  *   *    *
+           *                        *     *   *
+           ******** 
+              *                       ******    
+              *                           *
+          ***********                   *            */
+
+
+        /************************************************************************************
+        * 함  수  명      : btnLoadExcel_Click
+        * 내      용      : 엑셀불러오기 버튼을 눌렀을 경우
+        * 작  성  자      : 최경태
+        * 설      명      : 파일 열기 대화상자 생성하여 엑셀을 불러오고 데이터 가공을 시작한다.
+        ************************************************************************************/
         private void btnLoadExcel_Click(object sender, RoutedEventArgs e)
         {
             OpenExcelFile();
         }
 
-        //분리한 이유는 매번 새로운 인스턴를 생성하기 위해서 
-        //(이프로그램은 특정한 규격의 엑셀만 돌아가게 설계)
+     
+        /************************************************************************************
+        * 함  수  명      : OpenExcelFile
+        * 내      용      : 엑셀을 선택하는 함수
+        * 작  성  자      : 최경태
+        * 설      명      : 엑셀 선택하여 데이터를 불러온다.
+        *                   분리한 이유는 매번 새로운 인스턴를 생성하기 위해서 (이프로그램은 특정한 규격의 엑셀만 돌아가게 설계)   
+        ************************************************************************************/
         private void OpenExcelFile()
         {
             // 매번 새로운 OpenFileDialog 인스턴스 생성
@@ -77,17 +101,22 @@ namespace excelChange
 
             if (openFileDialog.ShowDialog() == true)
             {
-                LoadExcelFile(openFileDialog.FileName);
+                saveFileName = openFileDialog.FileName;
+                LoadExcelFile(openFileDialog.FileName,true);
                 btnQureyExcel.Visibility = Visibility.Visible;
+
             }
         }
 
-        /*
-         * 
-         * 엑셀을 데이터 그리드로 변경하고 그리고나서 데이터를 String 2차배열으로 변환한다.
-         * 
-        */
-        private void LoadExcelFile(string filePath)
+
+        /************************************************************************************
+        * 함  수  명      : LoadExcelFile
+        * 내      용      : 엑셀을 데이터를 그리드로 불러오는 함수 
+        * 작  성  자      : 최경태
+        * 설      명      : 엑셀을 (dataGrid_YN가 true일경우)데이터 그리드에 대입하고  
+        *                      상관없이 그후  데이터를 String 2차배열으로 변환한다.
+        ************************************************************************************/
+        private void LoadExcelFile(string filePath,bool dataGrid_YN)
         {
             try
             {
@@ -120,11 +149,13 @@ namespace excelChange
                             dataTable.Rows.Add(newRow);
                         }
                     }
-                
-          
-                // 데이터 그리드에 데이터 바인딩
-                dataGrid.ItemsSource = dataTable.DefaultView;
 
+                    
+                    // 데이터 그리드에 데이터 바인딩
+                    if (dataGrid_YN)
+                    {
+                        dataGrid.ItemsSource = dataTable.DefaultView;
+                    }
                 // 2차원 배열로 변환
                 string[,] dataArray = new string[dataTable.Rows.Count, dataTable.Columns.Count];
 
@@ -139,7 +170,7 @@ namespace excelChange
 
 
                 Querylist = excelToInsert(dataArray);
-                /*
+                /* //테스트 코드 
                 foreach (string str in Querylist)
                 {
                     Console.WriteLine(str);
@@ -157,11 +188,14 @@ namespace excelChange
 
         }
 
-        /**
-         * 2차배열을 받아서 List로 Insert해주는 것을 만들기 위한 로직
-         * 즉, 커스텀을 하시면 될 듯합니다.
-         * [↓,→]
-         */
+        /************************************************************************************
+        * 함  수  명      : excelToInsert
+        * 내      용      : 엑셀 데이터를 string 2차배열[↓,→]로 받아  Insert로 변환하는 함수 (커스텀)
+        * 작  성  자      : 최경태
+        * 설      명      : 엑셀데이터를 받아 List로 변환하는 과정에서 사용자가 복사 붙여넣기 하기 편하게 Insert쿼리를 자동으로 제작해주는 로직으로
+        *                   각종 사용자가 만든 예외상황으로 인해 예상치 못한 계산이 나올경우 쿼리에 주석으로 경고를 남겨놓도록 설계
+        ************************************************************************************/
+  
         public List<string> excelToInsert(string[,] exceldata) {
             //  커스텀해드림   2(m)  4*2*5  /,2(r1) r15
             bool count = false;
@@ -219,7 +253,7 @@ namespace excelChange
 
                             gubun = "A"; // 이름이 포함된 경우
                         }
-                        else if (ContainsEnglish(splitData[length]) || Zero_names.Any(name => splitData[length].Contains(name)))
+                        else if (OnlyEnglish(splitData[length]) || Zero_names.Any(name => splitData[length].Contains(name)))
                         {
                             //open인경우는 공란이다.
                             if (string.Equals("open", dr_nm.ToLower())) {
@@ -272,11 +306,14 @@ namespace excelChange
             
             return result;
         }
-             /**
-              * 해당로직은 필터로직으로 이름의 구분을 하는 필터이다 사용자가 원하는 내용대로 커스텀을 해주었다.
-              *
-              */
-         static string Filter(string input)
+
+        /************************************************************************************
+        * 함  수  명      : Filter
+        * 내      용      : 커스텀 된 필터 로직
+        * 작  성  자      : 최경태
+        * 설      명      : 사용자가 원하는 내용을 담아 커스텀을 한 필터 로직이다. 해당 필터 로직으로 이름을 구분을 한다.
+        ************************************************************************************/
+        static string Filter(string input)
         {
             // 1단계: 숫자 다음이나 ')' 다음의 '주' 삭제
             string result = Regex.Replace(input, @"(\d|[)])주+", "$1");
@@ -300,16 +337,24 @@ namespace excelChange
             return result;
         }
 
-
-        //영어만.
-        static bool ContainsEnglish(string str)
+        /************************************************************************************
+        * 함  수  명      : OnlyEnglish
+        * 내      용      : 영어만 있는 경우에 True반환
+        * 작  성  자      : 최경태
+        * 설      명      : 입력받은 string에서 영어만 있는 경우에 True반환한다.
+        ************************************************************************************/
+        static bool OnlyEnglish(string str)
         {
             // 정규 표현식을 사용하여 영어만.
             return Regex.IsMatch(str, @"^[a-zA-Z]+$");
         }
 
-        //쿼리를 띄워주는 화면을 생성 
-        //전역리스트로 값을 불러온다.
+        /************************************************************************************
+        * 함  수  명      : BtnQureyExcel_Click
+        * 내      용      : 쿼리변환 버튼을 눌렀을때 나타나는 함수
+        * 작  성  자      : 최경태
+        * 설      명      : 쿼리을 보이게 하고 엑셀로드창은 숨기며 쿼리블럭에 현재 필터링 되어있는 값을 주입하여 사용자에게 보여준다.
+        ************************************************************************************/
         private void BtnQureyExcel_Click(object sender, RoutedEventArgs e)
         {
             QueryBox.Visibility = Visibility.Visible;
@@ -317,12 +362,52 @@ namespace excelChange
             QueryBlock.Text = string.Join(Environment.NewLine, Querylist);
         }
 
-        //가리기(껐으니까)
+        /************************************************************************************
+        * 함  수  명      : BoxClose_Click
+        * 내      용      : 쿼리 블럭을 종료 했을경우
+        * 작  성  자      : 최경태
+        * 설      명      : 쿼리를 안보이게 하고 엑셀로드창을 다시 보이게 변환
+        ************************************************************************************/
         private void BoxClose_Click(object sender, RoutedEventArgs e)
         {
 
             QueryBox.Visibility = Visibility.Hidden;
             LoadBox.Visibility = Visibility.Visible;
+        }
+
+        /************************************************************************************
+        * 함  수  명      : Btn_Setting_Click
+        * 내      용      : 설정창을 눌렀을 경우
+        * 작  성  자      : 최경태
+        * 설      명      : 설정창을 키고 설정창이 종료됨을 알 수 있도록 이벤트를 구독
+        ************************************************************************************/
+        private void Btn_Setting_Click(object sender, RoutedEventArgs e)
+        {
+            // 현재 창을 'this'로 참조하여 SettingView의 Owner 속성에 설정
+            Setting setting = new Setting(_eventAggregator);
+            // 이벤트 구독
+            setting.SettingClosed += OnSettingClosed;
+            setting.Owner = this;  // 현재 창을 소유자로 설정
+
+            setting.ShowDialog();
+        }
+
+
+
+        /************************************************************************************
+        * 함  수  명      : OnSettingClosed
+        * 내      용      : 설정창이 종료 되었을 경우
+        * 작  성  자      : 최경태
+        * 설      명      : 자식 창이 닫힐 때 호출될 이벤트 핸들러를 이용하여 설정창이 종료 되었을 경우 적용 되도록 변경 
+        ************************************************************************************/
+        private void OnSettingClosed(object sender, EventArgs e)
+        {
+            MessageBox.Show("테스트");
+            //데이터그리드에는 반영하지 않는다.
+            if (!string.IsNullOrEmpty(saveFileName))
+            {
+                LoadExcelFile(saveFileName, false);
+            }
         }
     }
 }
