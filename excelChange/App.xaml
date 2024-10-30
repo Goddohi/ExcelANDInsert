@@ -4,6 +4,16 @@
              xmlns:local="clr-namespace:excelChange"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
-         
+        <ResourceDictionary>
+                <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Theme/ColorsDark.xaml"/>
+                <ResourceDictionary Source="Theme/MinimizeButtonStyles.xaml"/>
+                <ResourceDictionary Source="Theme/MaximizeButtonStyles.xaml"/>
+                <ResourceDictionary Source="Theme/DefalutButtonStyles.xaml"/>
+                <ResourceDictionary Source="Theme/WindowsCloseButtonStyles.xaml"/>
+                <ResourceDictionary Source="Theme/DefalutButtonStyles_Custom.xaml"/>
+                <ResourceDictionary Source="Theme/ModernTextboxTheme.xaml"/> 
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
     </Application.Resources>
 </Application>

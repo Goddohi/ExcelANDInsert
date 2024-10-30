@@ -12,6 +12,8 @@ using NPOI.XSSF.UserModel;
 using System.Text.RegularExpressions;
 using excelChange.View;
 using excelChange.Core;
+using System.Windows.Threading;
+using System.Windows.Input;
 
 namespace excelChange
 {
@@ -74,7 +76,6 @@ namespace excelChange
         /************************************************************************************
         * 함  수  명      : btnLoadExcel_Click
         * 내      용      : 엑셀불러오기 버튼을 눌렀을 경우
-        * 작  성  자      : 최경태
         * 설      명      : 파일 열기 대화상자 생성하여 엑셀을 불러오고 데이터 가공을 시작한다.
         ************************************************************************************/
         private void btnLoadExcel_Click(object sender, RoutedEventArgs e)
@@ -86,7 +87,6 @@ namespace excelChange
         /************************************************************************************
         * 함  수  명      : OpenExcelFile
         * 내      용      : 엑셀을 선택하는 함수
-        * 작  성  자      : 최경태
         * 설      명      : 엑셀 선택하여 데이터를 불러온다.
         *                   분리한 이유는 매번 새로운 인스턴를 생성하기 위해서 (이프로그램은 특정한 규격의 엑셀만 돌아가게 설계)   
         ************************************************************************************/
@@ -112,7 +112,6 @@ namespace excelChange
         /************************************************************************************
         * 함  수  명      : LoadExcelFile
         * 내      용      : 엑셀을 데이터를 그리드로 불러오는 함수 
-        * 작  성  자      : 최경태
         * 설      명      : 엑셀을 (dataGrid_YN가 true일경우)데이터 그리드에 대입하고  
         *                      상관없이 그후  데이터를 String 2차배열으로 변환한다.
         ************************************************************************************/
@@ -191,14 +190,13 @@ namespace excelChange
         /************************************************************************************
         * 함  수  명      : excelToInsert
         * 내      용      : 엑셀 데이터를 string 2차배열[↓,→]로 받아  Insert로 변환하는 함수 (커스텀)
-        * 작  성  자      : 최경태
         * 설      명      : 엑셀데이터를 받아 List로 변환하는 과정에서 사용자가 복사 붙여넣기 하기 편하게 Insert쿼리를 자동으로 제작해주는 로직으로
         *                   각종 사용자가 만든 예외상황으로 인해 예상치 못한 계산이 나올경우 쿼리에 주석으로 경고를 남겨놓도록 설계
         ************************************************************************************/
   
         public List<string> excelToInsert(string[,] exceldata) {
             //  커스텀해드림   2(m)  4*2*5  /,2(r1) r15
-            bool count = false;
+            bool count = true;
             List<string> result = new List<string>();
             for (int row=2;row < 2+40; row+=4)
             {
@@ -310,7 +308,6 @@ namespace excelChange
         /************************************************************************************
         * 함  수  명      : Filter
         * 내      용      : 커스텀 된 필터 로직
-        * 작  성  자      : 최경태
         * 설      명      : 사용자가 원하는 내용을 담아 커스텀을 한 필터 로직이다. 해당 필터 로직으로 이름을 구분을 한다.
         ************************************************************************************/
         static string Filter(string input)
@@ -340,7 +337,6 @@ namespace excelChange
         /************************************************************************************
         * 함  수  명      : OnlyEnglish
         * 내      용      : 영어만 있는 경우에 True반환
-        * 작  성  자      : 최경태
         * 설      명      : 입력받은 string에서 영어만 있는 경우에 True반환한다.
         ************************************************************************************/
         static bool OnlyEnglish(string str)
@@ -352,33 +348,22 @@ namespace excelChange
         /************************************************************************************
         * 함  수  명      : BtnQureyExcel_Click
         * 내      용      : 쿼리변환 버튼을 눌렀을때 나타나는 함수
-        * 작  성  자      : 최경태
-        * 설      명      : 쿼리을 보이게 하고 엑셀로드창은 숨기며 쿼리블럭에 현재 필터링 되어있는 값을 주입하여 사용자에게 보여준다.
+        * 설      명      : 쿼리을 새창으로 띄워준다. 필터링 되어있는 값을 주입하여 사용자에게 보여준다.
+        * 수정  내용      : Codewindow를 제작하였기 때문이 이제는 로드창을 숨기지 않고 새창을 연다
         ************************************************************************************/
         private void BtnQureyExcel_Click(object sender, RoutedEventArgs e)
         {
-            QueryBox.Visibility = Visibility.Visible;
-            LoadBox.Visibility = Visibility.Hidden;
-            QueryBlock.Text = string.Join(Environment.NewLine, Querylist);
+          //  QueryBox.Visibility = Visibility.Visible;
+          //  LoadBox.Visibility = Visibility.Hidden;
+          //  QueryBlock.Text = string.Join(Environment.NewLine, Querylist);
+            OpenCodeWIndow(string.Join(Environment.NewLine, Querylist));
         }
 
-        /************************************************************************************
-        * 함  수  명      : BoxClose_Click
-        * 내      용      : 쿼리 블럭을 종료 했을경우
-        * 작  성  자      : 최경태
-        * 설      명      : 쿼리를 안보이게 하고 엑셀로드창을 다시 보이게 변환
-        ************************************************************************************/
-        private void BoxClose_Click(object sender, RoutedEventArgs e)
-        {
 
-            QueryBox.Visibility = Visibility.Hidden;
-            LoadBox.Visibility = Visibility.Visible;
-        }
 
         /************************************************************************************
         * 함  수  명      : Btn_Setting_Click
         * 내      용      : 설정창을 눌렀을 경우
-        * 작  성  자      : 최경태
         * 설      명      : 설정창을 키고 설정창이 종료됨을 알 수 있도록 이벤트를 구독
         ************************************************************************************/
         private void Btn_Setting_Click(object sender, RoutedEventArgs e)
@@ -397,7 +382,6 @@ namespace excelChange
         /************************************************************************************
         * 함  수  명      : OnSettingClosed
         * 내      용      : 설정창이 종료 되었을 경우
-        * 작  성  자      : 최경태
         * 설      명      : 자식 창이 닫힐 때 호출될 이벤트 핸들러를 이용하여 설정창이 종료 되었을 경우 적용 되도록 변경 
         ************************************************************************************/
         private void OnSettingClosed(object sender, EventArgs e)
@@ -408,6 +392,89 @@ namespace excelChange
             {
                 LoadExcelFile(saveFileName, false);
             }
+        }
+        /************************************************************************************
+        * 함  수  명      : OpenCodeWIndow
+        * 내      용      : 코드 새창열기
+        * 설      명      : 코드를 받고 새창을 연다
+        ************************************************************************************/
+
+
+        protected void OpenCodeWIndow(string code)
+        {
+            using (CodeWindow window = new CodeWindow())
+            {
+                window.Owner = this.Parent as Window;
+                window.Show();
+                window.TxtCode.Text = code;
+            }
+        }
+
+
+
+        private int _clickCount = 0;
+        private const int DoubleClickThreshold = 500; // 더블 클릭을 감지하기 위한 시간 (밀리초)
+
+        /// <summary>
+        /// 기본적인 환경 제작
+        /// </summary>
+
+        //최소화
+        private void MinimizeButton_Click(object sender, RoutedEventArgs e)
+        {
+            this.WindowState = WindowState.Minimized;
+        }
+        //최대화
+        private void Maximize_window()
+        {
+            if (this.WindowState == WindowState.Maximized)
+            {
+                this.WindowState = WindowState.Normal;
+            }
+            else
+            {
+                this.WindowState = WindowState.Maximized;
+            }
+        }
+
+        //드래그 박스 더블클릭 인식 메소드
+        private void TextBlock_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            _clickCount++;
+            if (_clickCount == 1)
+            {
+                // 첫 번째 클릭 후 타이머 시작
+                DispatcherTimer timer = new DispatcherTimer
+                {
+                    Interval = TimeSpan.FromMilliseconds(DoubleClickThreshold)
+                };
+                timer.Tick += (s, args) =>
+                {
+                    timer.Stop();
+                    _clickCount = 0; // 타이머가 만료되면 클릭 카운트 리셋
+                };
+                timer.Start();
+            }
+            else if (_clickCount == 2)
+            {
+                _clickCount = 0;
+                Maximize_window();
+            }
+        }
+
+
+        // 닫기 메소드
+        private void CloseButton_Click(object sender, RoutedEventArgs e)
+        {
+            this.Close();
+            // 어플리케이션을 종료
+            Application.Current.Shutdown();
+        }
+        //
+        //최대화
+        private void MaximizeButton_Click(object sender, RoutedEventArgs e)
+        {
+            Maximize_window();
         }
     }
 }

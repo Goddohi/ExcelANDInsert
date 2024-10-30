@@ -4,23 +4,77 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:excelChange"
+        xmlns:w="clr-namespace:excelChange.Core"
         mc:Ignorable="d"
-        Title="엑셀쿼리변경" Height="450" Width="800">
-    <Grid>
-        <Grid x:Name="QueryBox" Background="Ivory" Visibility="Hidden">
-            <Button Name="BoxClose" Content="Close" Height="28" Width="50" Margin="10" Click="BoxClose_Click" VerticalAlignment="Top" HorizontalAlignment="Right"/>
-            <ScrollViewer Margin="0 40 0 0">
-                <TextBox  x:Name="QueryBlock" TextWrapping="Wrap"  Background="Ivory" />
-            </ScrollViewer>
+        Title="엑셀쿼리변경" Height="450" Width="800" 
+        Background="{DynamicResource windowbackground}"
+        WindowStyle="None"
+        AllowsTransparency="True">
+   
+        <Grid>
+            <Border Background="{DynamicResource MainBackgroundBrush}"
+            CornerRadius="20">
+                <Grid>
+                    <Rectangle Fill="Transparent" Height="5" VerticalAlignment="Top" w:WindowResizer.Direction="Top"/>
+                    <Rectangle Fill="Transparent" Height="10" VerticalAlignment="Bottom" w:WindowResizer.Direction="Bottom"/>
+                    <Rectangle Fill="Transparent" Width="10" HorizontalAlignment="Left" w:WindowResizer.Direction="Left"/>
+                    <Rectangle Fill="Transparent" Width="10" HorizontalAlignment="Right" w:WindowResizer.Direction="Right"/>
 
-        </Grid>
-        <Grid x:Name="LoadBox">
-            <!--<Image Height="40" Width="40" VerticalAlignment="Top" HorizontalAlignment="Left" Source="pack://application:,,,/Image/ExcelChangeSQL.png"/> -->
-            <Button Name="btnLoadExcel" Content="Load Excel" Click="btnLoadExcel_Click" VerticalAlignment="Top" Width="100" Height="30" />
-            <Button Name="btnQureyExcel" Content="Qurey Excel" Click="BtnQureyExcel_Click" VerticalAlignment="Top" HorizontalAlignment="Right" Margin="0 0 150 0 " Width="100" Height="30" Visibility="Hidden"/>
-            <DataGrid Name="dataGrid" AutoGenerateColumns="True" Margin="10,50,10,10" />
-            <Button x:Name="btn_Setting" Content="설정창" Click="Btn_Setting_Click" VerticalAlignment="Top" Width="100" Height="30" Margin="28,0,664,0" />
+                    <Rectangle Fill="Transparent" Height="5" Width="8" VerticalAlignment="Top" HorizontalAlignment="Left" w:WindowResizer.Direction="TopLeft"/>
+                    <Rectangle Fill="Transparent" Height="10" Width="10" VerticalAlignment="Top" HorizontalAlignment="Right" w:WindowResizer.Direction="TopRight"/>
+                    <Rectangle Fill="Transparent" Height="10" Width="10" VerticalAlignment="Bottom" HorizontalAlignment="Left" w:WindowResizer.Direction="BottomLeft"/>
+                    <Rectangle Fill="Transparent" Height="10" Width="10" VerticalAlignment="Bottom" HorizontalAlignment="Right" w:WindowResizer.Direction="BottomRight"/>
+
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="35"/>
+                            <RowDefinition Height="2"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+
+                        <!-- 잡아서 이동하는 영역  + 색상 테스트를 위해 잠시 보이게 변경-->
+                        <Border Grid.Row="0"  
+                        CornerRadius="20" Background="{DynamicResource MainBackgroundBrush}" VerticalAlignment="Top" Margin="5,5,5,0" Height="30" w:WindowResizer.Direction="Drag">
+
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <!-- 드래그 영역 가로로 쫙 채우기 지우고 사실상 MARGIN으로 해도될듯  -->
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="30" />
+                                    <ColumnDefinition Width="30" />
+                                    <ColumnDefinition Width="30" />
+                                </Grid.ColumnDefinitions>
+                                <!-- 드래그하는 곳에 더블 클릭시 최대화면 로직 -->
+                                <TextBlock Text="환경 설정" Margin="0,5,0,0"
+                                    TextAlignment="Center" FontSize="13" FontStyle="Oblique"  Foreground="{DynamicResource textTitleColor}"
+                                    Grid.Column="0" Grid.ColumnSpan="4" Height="35" VerticalAlignment="Center" HorizontalAlignment="Stretch"  MouseDown="TextBlock_MouseDown"/>
+
+                            <Button Style="{DynamicResource DefaultButtonStyleCustom}" x:Name="btn_Setting" Content="설정창" Click="Btn_Setting_Click" VerticalAlignment="Top" Width="50" Height="25"  />
+
+                            <!-- 최소화 버튼 -->
+                                <Button Style="{DynamicResource MinimizeButtonStyle}"
+                             Grid.Column="1" Click="MinimizeButton_Click"/>
+
+                                <!-- 최대화 버튼-->
+                                <Button Style="{DynamicResource MaximizeButtonStyle}" Grid.Column="2" Click="MaximizeButton_Click"/>
+                                <!-- 프로그램 종료 -->
+                                <Button Style="{DynamicResource WindowsCloseButtonStyle}"  Grid.Column="3" Click="CloseButton_Click"/>
+                            </Grid>
+                        </Border>
+                    <!--메인-->
+                    <Grid Grid.Row="2">
+                        <Grid x:Name="LoadBox">
+                            <!--<Image Height="40" Width="40" VerticalAlignment="Top" HorizontalAlignment="Left" Source="pack://application:,,,/Image/ExcelChangeSQL.png"/> -->
+                            <Button  Style="{DynamicResource DefaultButtonStyleCustom}" Name="btnLoadExcel" Content="Load Excel" Click="btnLoadExcel_Click" HorizontalAlignment="Center" VerticalAlignment="Top" Width="100" Height="30" />
+                            <Button  Style="{DynamicResource DefaultButtonStyleCustom}" Name="btnQureyExcel" Content="Qurey Excel" Click="BtnQureyExcel_Click" VerticalAlignment="Top" HorizontalAlignment="Right" Margin="0 0 50 0 " Width="100" Height="30" Visibility="Hidden"/>
+                            <DataGrid Name="dataGrid" AutoGenerateColumns="True" Margin="10,50,10,10" />
+                            </Grid>
+
+                    </Grid>
+
+                </Grid>
+                </Grid>
+            </Border>
         </Grid>
 
-    </Grid>
 </Window>
