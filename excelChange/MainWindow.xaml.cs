@@ -14,6 +14,7 @@ using excelChange.View;
 using excelChange.Core;
 using System.Windows.Threading;
 using System.Windows.Input;
+using excelChange.Entity;
 
 namespace excelChange
 {
@@ -25,6 +26,8 @@ namespace excelChange
         public MainWindow()
         {
             InitializeComponent();
+            LoadTableData();
+            LoadXML_TypeName();
         }
 
         /// <summary>
@@ -37,10 +40,10 @@ namespace excelChange
         /// <summary>
         /// Xnames에 있는 이름은 겹치는 무조건 해당값(X)에 걸러준다
         /// </summary>
-        List<string> Cnames = new List<string> {"d"};
+        List<string> Cnames = new List<string> {};
         List<string> Bnames = new List<string> {  };
         List<string> Anames = new List<string> {  };
-        List<string> Zero_names = new List<string> {"open","OPEN"};
+        List<string> Zero_names = new List<string> {};
 
 
         /// <summary>
@@ -54,23 +57,20 @@ namespace excelChange
 
         //저장할 테이블이름
         string tablename = "d";
-
+        // 더블 클릭을 감지하기 위한 시간 (밀리초)
+        private const int DoubleClickThreshold = 500;
+        // 더블클릭 메소드 
+        private int _clickCount = 0;
         //Setting 창닫는이벤트 인식용
         private readonly EventAggregator _eventAggregator = new EventAggregator();
+
+        //XML로더
+        XmlLoad xmlLoad = XmlLoad.make();
         //추후 재 로직에 필요할 데이터
         string saveFileName = "";
 
 
 
-
-        /* ********                ********   *
-                  *                    *      *
-           ********                  *   *    *
-           *                        *     *   *
-           ******** 
-              *                       ******    
-              *                           *
-          ***********                   *            */
 
 
         /************************************************************************************
@@ -107,6 +107,106 @@ namespace excelChange
 
             }
         }
+        /************************************************************************************
+        * 함  수  명      : LoadTableData
+        * 내      용      : 테이블 이름을 불러옵니다
+        * 설      명      : 저장되어있는 테이블 이름을 불러옵니다.
+        ************************************************************************************/
+        private void LoadTableData()
+        {
+
+            try
+            {
+                TableEntity tableEntity = xmlLoad.LoadObjectFromXml<TableEntity>("Table.xml");
+                tablename = tableEntity.Name;
+
+            }
+            catch
+            {
+                MessageBox.Show("테이블NAME을 불러오지 못했습니다.");
+            }
+        }
+
+
+        /************************************************************************************
+        * 함  수  명      : LoadXML_TypeName
+        * 내      용      : 저장된 예외타입들을 불러옵니다.
+        * 설      명      : 저장된 예외타입을 불러오는데 해당타입은 설정창을 닫을때와 시작할때 이루어집니다.
+        ************************************************************************************/
+        private void LoadXML_TypeName()
+        {
+            try
+            {
+                // 데이터 로드
+                var GetTypeSetting = xmlLoad.GetBasicSetting<TypeSettingEntity>("TypeNames.xml");
+
+                Only_Zero_names.Clear();
+
+                Only_Cnames.Clear();
+                Only_Bnames.Clear();
+                Only_Anames.Clear();
+
+                Zero_names.Clear();
+                Cnames.Clear();
+                Bnames.Clear();
+                Anames.Clear();
+                // 정렬 및 분류
+                var TypeSettings = GetTypeSetting
+                    .OrderBy(o => o.TYPE)
+                    .ThenBy(o => o.CONTAIN)
+                    .ThenBy(o => o.NAME);
+
+                foreach (var item in TypeSettings)
+                {
+                    if (item.TYPE == "0" && item.CONTAIN == "N")
+                    {
+                        if (!Only_Zero_names.Contains(item.NAME))
+                            Only_Zero_names.Add(item.NAME);
+                    }
+                    else if (item.TYPE == "0")
+                    {
+                        if (!Zero_names.Contains(item.NAME))
+                            Zero_names.Add(item.NAME);
+                    }
+                    else if (item.TYPE == "C" && item.CONTAIN == "N")
+                    {
+                        if (!Only_Cnames.Contains(item.NAME))
+                            Only_Cnames.Add(item.NAME);
+                    }
+                    else if (item.TYPE == "C")
+                    {
+                        if (!Cnames.Contains(item.NAME))
+                             Cnames.Add(item.NAME);
+                    }
+                    else if (item.TYPE == "B" && item.CONTAIN == "N")
+                    {
+                        if (!Only_Bnames.Contains(item.NAME))
+                            Only_Bnames.Add(item.NAME);
+                    }
+                    else if (item.TYPE == "B")
+                    {
+                        if (!Bnames.Contains(item.NAME))
+                            Bnames.Add(item.NAME);
+                    }
+                    else if (item.TYPE == "A" && item.CONTAIN == "N")
+                    {
+                        if (!Only_Anames.Contains(item.NAME))
+                            Only_Anames.Add(item.NAME);
+                    }
+                    else if (item.TYPE == "A")
+                    {
+                        if (!Anames.Contains(item.NAME))
+                            Anames.Add(item.NAME);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"오류 발생: {ex.Message}");
+            }
+        }
+
+
 
 
         /************************************************************************************
@@ -238,20 +338,20 @@ namespace excelChange
                         dr_nm = splitData[length];
 
                         //특수한 상황 주입
-                        if (Cnames.Any(name => splitData[length].Contains(name)))
+                        if (Cnames.Any(name => splitData[length].Contains(name)) || Only_Cnames.Any(name => splitData[length].Equals(name)))
                         {
                             gubun = "C"; // 이름이 포함된 경우
                             
-                        }else if(Bnames.Any(name => splitData[length].Contains(name)))
+                        }else if(Bnames.Any(name => splitData[length].Contains(name)) || Only_Bnames.Any(name => splitData[length].Equals(name)))
                         {
                             gubun = "B"; // 이름이 포함된 경우
                         }
-                        else if (Anames.Any(name => splitData[length].Contains(name)))
+                        else if (Anames.Any(name => splitData[length].Contains(name)) || Only_Anames.Any(name => splitData[length].Equals(name)))
                         {
 
                             gubun = "A"; // 이름이 포함된 경우
                         }
-                        else if (OnlyEnglish(splitData[length]) || Zero_names.Any(name => splitData[length].Contains(name)))
+                        else if (OnlyEnglish(splitData[length]) || Zero_names.Any(name => splitData[length].Contains(name)) || Only_Zero_names.Any(name => splitData[length].Equals(name)))
                         {
                             //open인경우는 공란이다.
                             if (string.Equals("open", dr_nm.ToLower())) {
@@ -386,20 +486,21 @@ namespace excelChange
         ************************************************************************************/
         private void OnSettingClosed(object sender, EventArgs e)
         {
-            MessageBox.Show("테스트");
-            //데이터그리드에는 반영하지 않는다.
+            LoadTableData();
+            LoadXML_TypeName();
             if (!string.IsNullOrEmpty(saveFileName))
             {
                 LoadExcelFile(saveFileName, false);
             }
+
         }
+
+
         /************************************************************************************
         * 함  수  명      : OpenCodeWIndow
         * 내      용      : 코드 새창열기
-        * 설      명      : 코드를 받고 새창을 연다
+        * 설      명      : 코드를 받고 새창을 열어서 code창에 코드를 입력한 상태로 띄워준다.
         ************************************************************************************/
-
-
         protected void OpenCodeWIndow(string code)
         {
             using (CodeWindow window = new CodeWindow())
@@ -412,19 +513,27 @@ namespace excelChange
 
 
 
-        private int _clickCount = 0;
-        private const int DoubleClickThreshold = 500; // 더블 클릭을 감지하기 위한 시간 (밀리초)
+       
+
 
         /// <summary>
         /// 기본적인 환경 제작
         /// </summary>
-
-        //최소화
+        /************************************************************************************
+        * 함  수  명      : MinimizeButton_Click
+        * 내      용      : 최소화 버튼
+        * 설      명      : 최소화 로직을 실행 시킨다.
+        ************************************************************************************/
         private void MinimizeButton_Click(object sender, RoutedEventArgs e)
         {
             this.WindowState = WindowState.Minimized;
         }
-        //최대화
+
+        /************************************************************************************
+        * 함  수  명      : Maximize_window
+        * 내      용      : 최대화
+        * 설      명      : 최대화를 실행시킨다. 이미 최대일경우 일반상태로 변경시킨다
+        ************************************************************************************/
         private void Maximize_window()
         {
             if (this.WindowState == WindowState.Maximized)
@@ -437,8 +546,13 @@ namespace excelChange
             }
         }
 
-        //드래그 박스 더블클릭 인식 메소드
-        private void TextBlock_MouseDown(object sender, MouseButtonEventArgs e)
+
+        /************************************************************************************
+        * 함  수  명      : DragBlock_MouseDown
+        * 내      용      : 드래그 박스 더블인식
+        * 설      명      : 드래그 박스에 더블인식을 추가하여 더블인식시 최대화 함수 실행
+        ************************************************************************************/
+        private void DragBlock_MouseDown(object sender, MouseButtonEventArgs e)
         {
             _clickCount++;
             if (_clickCount == 1)
@@ -462,15 +576,23 @@ namespace excelChange
             }
         }
 
-
-        // 닫기 메소드
+        /************************************************************************************
+        * 함  수  명      : CloseButton_Click
+        * 내      용      : 프로그램종료
+        * 설      명      : 잔여 프로세스가 남지 않도록 종료시킨다.
+        ************************************************************************************/
         private void CloseButton_Click(object sender, RoutedEventArgs e)
         {
             this.Close();
             // 어플리케이션을 종료
             Application.Current.Shutdown();
         }
-        //
+
+        /************************************************************************************
+        * 함  수  명      : MaximizeButton_Click
+        * 내      용      : 최대화 버튼 클릭
+        * 설      명      : 최대화 함수을 실행시킨다.
+        ************************************************************************************/
         //최대화
         private void MaximizeButton_Click(object sender, RoutedEventArgs e)
         {

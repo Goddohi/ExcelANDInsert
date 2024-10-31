@@ -1,7 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <!-- 
+REMARK뺴고  NOTNULL입니다.
      NAME     :  예외처리할 이름  
-     TYPE     :  0(숫자) ,  A , B , C
+     TYPE     :  0(숫자 알파벳o아님) ,  A , B , C
      CONTAIN  :  Y => 겹치기만 해도 OK   N=> 무조건 이것만 있어야 가능
      REMARK   :  왜 이런지 기록 남겨놓는 용도 
      
@@ -18,45 +19,11 @@
 <ArrayOfTypeSettingEntity xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 
   <TypeSettingEntity>
-    <NAME>설정이름</NAME>
-    <TYPE></TYPE>
-      <CONTAIN></CONTAIN>
-    <REMARK></REMARK>
+      <NAME>테스트</NAME>
+      <TYPE>A</TYPE>
+      <CONTAIN>Y</CONTAIN>
+      <REMARK>테스트</REMARK>
   </TypeSettingEntity>
 
-  <TypeSettingEntity>
-    <NAME>설정이름</NAME>
-    <TYPE></TYPE>
-    <CONTAIN></CONTAIN>
-    <REMARK></REMARK>
-  </TypeSettingEntity>
-
-  <TypeSettingEntity>
-    <NAME>설정이름</NAME>
-    <TYPE></TYPE>
-    <CONTAIN></CONTAIN>
-    <REMARK></REMARK>
-  </TypeSettingEntity>
-
-  <TypeSettingEntity>
-    <NAME>설정이름</NAME>
-    <TYPE></TYPE>
-    <CONTAIN></CONTAIN>
-    <REMARK></REMARK>
-  </TypeSettingEntity>
-
-  <TypeSettingEntity>
-    <NAME>설정이름</NAME>
-    <TYPE></TYPE>
-    <CONTAIN></CONTAIN>
-    <REMARK></REMARK>
-  </TypeSettingEntity>
-
-  <TypeSettingEntity>
-    <NAME>설정이름</NAME>
-    <TYPE></TYPE>
-    <CONTAIN></CONTAIN>
-    <REMARK></REMARK>
-  </TypeSettingEntity>
 
 </ArrayOfTypeSettingEntity>

@@ -43,7 +43,7 @@
                         <!-- 드래그하는 곳에 더블 클릭시 최대화면 로직 -->
                         <TextBlock Text="Code" Margin="0,5,0,0" x:Name="titlecode"
                                     TextAlignment="Center" FontSize="13" FontStyle="Oblique"  Foreground="{DynamicResource textTitleColor}"
-                                    Grid.Column="0" Grid.ColumnSpan="6" Height="35" VerticalAlignment="Center" HorizontalAlignment="Stretch"  MouseDown="TextBlock_MouseDown"/>
+                                    Grid.Column="0" Grid.ColumnSpan="6" Height="35" VerticalAlignment="Center" HorizontalAlignment="Stretch"  MouseDown="DragBlock_MouseDown"/>
 
                         <!-- 최소화 버튼 -->
                         <Button Style="{DynamicResource MinimizeButtonStyle}"

@@ -12,30 +12,34 @@
         Background="{DynamicResource windowbackground}"
         WindowStyle="None"
         AllowsTransparency="True">
+    <Window.Resources>
+        <CollectionViewSource x:Key="TypeSource" Source="{Binding ocTypeSetting}" />
+    </Window.Resources>
+    
     <Grid>
         <Border Background="{DynamicResource MainBackgroundBrush}"
             CornerRadius="20">
             <Grid>
-            <Rectangle Fill="Transparent" Height="5" VerticalAlignment="Top" w:WindowResizer.Direction="Top"/>
-            <Rectangle Fill="Transparent" Height="10" VerticalAlignment="Bottom" w:WindowResizer.Direction="Bottom"/>
-            <Rectangle Fill="Transparent" Width="10" HorizontalAlignment="Left" w:WindowResizer.Direction="Left"/>
-            <Rectangle Fill="Transparent" Width="10" HorizontalAlignment="Right" w:WindowResizer.Direction="Right"/>
-
-            <Rectangle Fill="Transparent" Height="5" Width="8" VerticalAlignment="Top" HorizontalAlignment="Left" w:WindowResizer.Direction="TopLeft"/>
-            <Rectangle Fill="Transparent" Height="10" Width="10" VerticalAlignment="Top" HorizontalAlignment="Right" w:WindowResizer.Direction="TopRight"/>
-            <Rectangle Fill="Transparent" Height="10" Width="10" VerticalAlignment="Bottom" HorizontalAlignment="Left" w:WindowResizer.Direction="BottomLeft"/>
-            <Rectangle Fill="Transparent" Height="10" Width="10" VerticalAlignment="Bottom" HorizontalAlignment="Right" w:WindowResizer.Direction="BottomRight"/>
+                <Rectangle Fill="Transparent" Height="5" VerticalAlignment="Top" w:WindowResizer.Direction="Top"/>
+                <Rectangle Fill="Transparent" Height="10" VerticalAlignment="Bottom" w:WindowResizer.Direction="Bottom"/>
+                <Rectangle Fill="Transparent" Width="10" HorizontalAlignment="Left" w:WindowResizer.Direction="Left"/>
+                <Rectangle Fill="Transparent" Width="10" HorizontalAlignment="Right" w:WindowResizer.Direction="Right"/>
     
-            <Grid>
-                <Grid.RowDefinitions>
+                <Rectangle Fill="Transparent" Height="5" Width="8" VerticalAlignment="Top" HorizontalAlignment="Left" w:WindowResizer.Direction="TopLeft"/>
+                <Rectangle Fill="Transparent" Height="10" Width="10" VerticalAlignment="Top" HorizontalAlignment="Right" w:WindowResizer.Direction="TopRight"/>
+                <Rectangle Fill="Transparent" Height="10" Width="10" VerticalAlignment="Bottom" HorizontalAlignment="Left" w:WindowResizer.Direction="BottomLeft"/>
+                <Rectangle Fill="Transparent" Height="10" Width="10" VerticalAlignment="Bottom" HorizontalAlignment="Right" w:WindowResizer.Direction="BottomRight"/>
+    
+                <Grid>
+                    <Grid.RowDefinitions>
                     <RowDefinition Height="35"/>
                     <RowDefinition Height="2"/>
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
 
-                <!-- 잡아서 이동하는 영역  + 색상 테스트를 위해 잠시 보이게 변경-->
-                <Border Grid.Column="0"  
-                        CornerRadius="20" Background="{DynamicResource MainBackgroundBrush}" VerticalAlignment="Top" Margin="5,5,5,0" Height="30" w:WindowResizer.Direction="Drag">
+                    <!-- 잡아서 이동하는 영역  + 색상 테스트를 위해 잠시 보이게 변경-->
+                    <Border Grid.Row="0" CornerRadius="20" Background="{DynamicResource MainBackgroundBrush}"
+                            VerticalAlignment="Top" Margin="5,5,5,0" Height="30" w:WindowResizer.Direction="Drag">
 
                     <Grid>
                         <Grid.ColumnDefinitions>
@@ -48,10 +52,13 @@
                         <!-- 드래그하는 곳에 더블 클릭시 최대화면 로직 -->
                         <TextBlock Text="환경 설정" Margin="0,5,0,0"
                                     TextAlignment="Center" FontSize="13" FontStyle="Oblique"  Foreground="{DynamicResource textTitleColor}"
-                                    Grid.Column="0" Grid.ColumnSpan="4" Height="35" VerticalAlignment="Center" HorizontalAlignment="Stretch"  MouseDown="TextBlock_MouseDown"/>
+                                    Grid.Column="0" Grid.ColumnSpan="4" Height="35" VerticalAlignment="Center" HorizontalAlignment="Stretch"  MouseDown="DragBlock_MouseDown"/>
+
+
+                            <Button Style="{DynamicResource DefaultButtonStyleCustom}"   x:Name="btn_Information" Content="도움말" Click="Btn_Information_Click"  Margin="70 0 0 0" VerticalAlignment="Top" HorizontalAlignment="Left" Width="50" Height="25"  />
+                            <Button Style="{DynamicResource DefaultButtonStyleCustom}"   x:Name="btn_maker"       Content="제작자" Click="Btn_maker_Click"        Margin="10 0 0 0" VerticalAlignment="Top" HorizontalAlignment="Left" Width="50" Height="25"  />
                         <!-- 최소화 버튼 -->
-                        <Button Style="{DynamicResource MinimizeButtonStyle}"
-                             Grid.Column="1" Click="MinimizeButton_Click"/>
+                        <Button Style="{DynamicResource MinimizeButtonStyle}" Grid.Column="1" Click="MinimizeButton_Click"/>
 
                         <!-- 최대화 버튼-->
                         <Button Style="{DynamicResource MaximizeButtonStyle}" Grid.Column="2" Click="MaximizeButton_Click"/>
@@ -59,6 +66,105 @@
                         <Button Style="{DynamicResource WindowsCloseButtonStyle}"  Grid.Column="3" Click="CloseButton_Click"/>
                      </Grid>
                     </Border>
+                    <!--메인영역-->
+                    <Grid Grid.Row="2">
+                        <!--메인화면-->
+
+                        <Grid x:Name="mainSettingGrid" >
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="2*"/>
+                                <RowDefinition Height="200"/>
+                            </Grid.RowDefinitions>
+                            <Button Style="{DynamicResource DefaultButtonStyleCustom}" x:Name="Btn_Add" Margin="0,2,185,0" Content="추가" Click="Btn_Add_Click" VerticalAlignment="Top" HorizontalAlignment="Right" Width="25" Height="25"  />
+                            <Button Style="{DynamicResource DefaultButtonStyleCustom}" x:Name="Btn_Delete" Margin="0,2,155,0" Content="삭제" Click="Btn_Delete_Click" VerticalAlignment="Top" HorizontalAlignment="Right" Width="25" Height="25"  />
+
+                            <Button Style="{DynamicResource DefaultButtonStyleCustom}" x:Name="Btn_Reset" Margin="0,2,100,0" Content="새로고침" Click="Btn_Reset_Click" VerticalAlignment="Top" HorizontalAlignment="Right" Width="50" Height="25"  />
+
+                            <Button Style="{DynamicResource DefaultButtonStyleCustom}" x:Name="Btn_Save" Margin="0,2,45,0" Content="저장" Click="Btn_Save_Click" VerticalAlignment="Top" HorizontalAlignment="Right" Width="50" Height="25" />
+
+                          
+                            <DataGrid Grid.Row="0" Margin="30" AutoGenerateColumns="False" HorizontalAlignment="Stretch" x:Name="DgdTypeName"
+                               ItemsSource="{Binding Source={StaticResource TypeSource}}" 
+                              VerticalAlignment="Stretch"  AllowDrop="True" CanUserAddRows="False"
+                              HorizontalGridLinesBrush="{DynamicResource TS_DgdCol_GridLine}" VerticalGridLinesBrush="{DynamicResource TS_DgdCol_GridLine}" EnableColumnVirtualization="True" >
+                                <DataGrid.Resources>
+                                    <Style TargetType="DataGridCellsPresenter">
+                                        <Setter Property="Height" Value="22" />
+                                        <Setter Property="VerticalContentAlignment" Value="Center" />
+                                    </Style>
+                                </DataGrid.Resources>
+                                <DataGrid.Columns>
+                                    <DataGridTextColumn Binding="{Binding NAME}" Header="Name" MinWidth="100" Width="Auto" MaxWidth="120" />
+                                    <DataGridComboBoxColumn Header="Type" 
+                        SelectedItemBinding="{Binding TYPE}" 
+                        MinWidth="50" 
+                        Width="Auto" 
+                        MaxWidth="220">
+                                        <DataGridComboBoxColumn.ElementStyle>
+                                            <Style TargetType="ComboBox">
+                                                <Setter Property="ItemsSource" Value="{Binding TypeList}" />
+                                            </Style>
+                                        </DataGridComboBoxColumn.ElementStyle>
+                                        <DataGridComboBoxColumn.EditingElementStyle>
+                                            <Style TargetType="ComboBox">
+                                                <Setter Property="ItemsSource" Value="{Binding TypeList}" />
+                                            </Style>
+                                        </DataGridComboBoxColumn.EditingElementStyle>
+                                    </DataGridComboBoxColumn>
+
+                                    <DataGridComboBoxColumn Header="Contain" 
+                        SelectedItemBinding="{Binding CONTAIN}" 
+                        MinWidth="50" 
+                        Width="Auto" 
+                        MaxWidth="350">
+                                        <DataGridComboBoxColumn.ElementStyle>
+                                            <Style TargetType="ComboBox">
+                                                <Setter Property="ItemsSource" Value="{Binding ContainList}" />
+                                            </Style>
+                                        </DataGridComboBoxColumn.ElementStyle>
+                                        <DataGridComboBoxColumn.EditingElementStyle>
+                                            <Style TargetType="ComboBox">
+                                                <Setter Property="ItemsSource" Value="{Binding ContainList}" />
+                                            </Style>
+                                        </DataGridComboBoxColumn.EditingElementStyle>
+                                    </DataGridComboBoxColumn>
+
+                                    <DataGridTextColumn Binding="{Binding REMARK}" Header="코멘트" MinWidth="100" Width="Auto" MaxWidth="350" />
+                                </DataGrid.Columns>
+                            </DataGrid>
+                            <Grid Grid.Row="1">
+                                <TextBlock  Margin="50,20,0,0 " HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="Wheat"> 테이블 명</TextBlock>
+                                <TextBox Foreground="Wheat" Style="{DynamicResource ModernTextfreebox}"  x:Name="txtName" Margin="50" VerticalAlignment="Top" />
+                                <Button  Style="{DynamicResource DefaultButtonStyleCustom}"  Margin="0,2,45,0" Content="테이블저장"  VerticalAlignment="Top" HorizontalAlignment="Right" Width="55" Height="25"  Click="SaveButton_Click" />
+                            </Grid>
+                        </Grid>
+                        <!-- 제작자-->
+                        <Grid x:Name="makerGrid" Visibility="Hidden">
+                            <Button Style="{DynamicResource DefaultButtonStyle}" x:Name="Btn_makerClose" Margin="5" Content="제작창 끄기" Click="Btn_makerClose_Click" VerticalAlignment="Top" HorizontalAlignment="Right" Width="55" Height="25"  />
+                            <StackPanel Margin="50">
+
+                                <TextBlock Foreground="Wheat" Text="제작: KyungTae Choi" Margin="0,0,5,0"/>
+                                <TextBlock Foreground="Wheat" Text="언제든 추가로 수정이 필요하 실 경우 요청해주시면 커스텀 해서 드리겠습니다" Margin="0,0,5,0"/>
+                                <TextBlock Foreground="Wheat" Text="" Margin="0,0,5,0">                                
+                                    <Hyperlink RequestNavigate="Hyperlink_RequestNavigate"  NavigateUri="https://github.com/Goddohi/ExcelANDInsert">
+                                   <TextBlock Foreground="Wheat" Text="업데이트 확인사이트" Margin="0,0,5,0"/>
+                                </Hyperlink>
+                                 </TextBlock>
+
+                            </StackPanel>
+                        </Grid>
+                        <!-- 설명창 -->
+                        <Grid x:Name="InformationGrid"  Visibility="Hidden">
+
+                            <Button Style="{DynamicResource DefaultButtonStyle}" x:Name="Btn_InformationClose" Margin="5" Content="도움말 끄기" Click="Btn_InformationClose_Click" VerticalAlignment="Top" HorizontalAlignment="Right" Width="55" Height="25"  />
+                            <StackPanel Margin="50">
+
+                                <TextBlock Foreground="Wheat" x:Name="infoText" Margin="0,0,5,0" />
+
+                            </StackPanel>
+                          
+                        </Grid>
+                    </Grid>
                 </Grid>
             </Grid>
         </Border>

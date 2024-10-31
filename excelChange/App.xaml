@@ -12,7 +12,9 @@
                 <ResourceDictionary Source="Theme/DefalutButtonStyles.xaml"/>
                 <ResourceDictionary Source="Theme/WindowsCloseButtonStyles.xaml"/>
                 <ResourceDictionary Source="Theme/DefalutButtonStyles_Custom.xaml"/>
-                <ResourceDictionary Source="Theme/ModernTextboxTheme.xaml"/> 
+                <ResourceDictionary Source="Theme/ModernTextboxTheme.xaml"/>
+                <ResourceDictionary Source="Theme/DataGridStyle.xaml"/>
+
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Application.Resources>
